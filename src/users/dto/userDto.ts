@@ -15,6 +15,12 @@ export class UserDto {
     email: string;
 
     @Expose()
+    userName: string;
+
+    @Expose()
+    phoneNumber: string;
+    
+    @Expose()
     role:Role;
 
     @Expose()

@@ -20,6 +20,9 @@ export class UsersService {
     
     return user
   }
+  async find(email:string): Promise<CreateUserDto> {
+      return await this.usersRepository.find(email);
+  }
 
   async update(id: string, updateCatDto: UpdateUserDto): Promise<UpdateUserDto> {
     return this.usersRepository.update(id, updateCatDto);

@@ -19,6 +19,9 @@ export class UsersRepository {
     async findOne(id: string): Promise<CreateUserDto> {        
         return this.userModel.findById(id);
     }
+    async find(email:string): Promise<any> {        
+        return this.userModel.find({ email });
+    }
 
     async update(id: string, updateCatDto: UpdateUserDto): Promise<UpdateUserDto> {
         return this.userModel.findByIdAndUpdate(id, updateCatDto, { new: true }).exec();

@@ -22,7 +22,6 @@ export class CreateUserDto {
     @Matches(patterns.PASSWORD_PATTERN, { message: 'Password must contain at least one number , Capital letter and one special character'})
     @IsString()
     @MinLength(8)
-    @Exclude()
     password: string;
 
     @IsString()
