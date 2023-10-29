@@ -1,3 +1,4 @@
+import { Exclude, Expose } from "class-transformer";
 import { IsEmail, IsEnum, IsPhoneNumber, IsString, Matches, MaxLength, MinLength } from "class-validator";
 import patterns from "src/interfaces/patterns";
 import { Role } from "src/interfaces/user.interface";
@@ -21,6 +22,7 @@ export class CreateUserDto {
     @Matches(patterns.PASSWORD_PATTERN, { message: 'Password must contain at least one number , Capital letter and one special character'})
     @IsString()
     @MinLength(8)
+    @Exclude()
     password: string;
 
     @IsString()

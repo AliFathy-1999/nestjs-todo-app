@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ClassSerializerInterceptor, ConflictException, Injectable, UseInterceptors } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -9,14 +9,15 @@ export class UsersRepository {
     constructor(@InjectModel('User') private readonly userModel: Model<CreateUserDto>) {}
 
     async create(createUserDto: CreateUserDto): Promise<CreateUserDto> {
-        const createdUser = new this.userModel(createUserDto);
-        return createdUser.save();
+        const createdUser = this.userModel.create(createUserDto);
+        return createdUser;
     }
     async findAll(): Promise<CreateUserDto[]> {
         return this.userModel.find().exec();
     }
-    async findOne(id: string): Promise<CreateUserDto> {
-        return this.userModel.findById(id).exec();
+
+    async findOne(id: string): Promise<CreateUserDto> {        
+        return this.userModel.findById(id);
     }
 
     async update(id: string, updateCatDto: UpdateUserDto): Promise<UpdateUserDto> {
