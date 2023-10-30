@@ -7,19 +7,14 @@ import { UsersRepository } from './users.repository';
 import { AuthService } from './auth.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import config from 'src/config';
-const { jwt } = config 
-console.log(jwt.secret);
+const { jwtConstants } = config 
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: 'User', schema: UserSchema }
     ]),
-    JwtModule.register({ 
-      secret: jwt.secret,
-      signOptions: { expiresIn: '3d' },
-
-    }),
+    JwtModule.register(jwtConstants),
   ],
   controllers: [UsersController],
   providers: [ 

@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './users.repository';
+import { ObjectId } from 'mongoose';
 
 @Injectable()
 export class UsersService {
@@ -14,7 +15,7 @@ export class UsersService {
     return await this.usersRepository.findAll();
   }
   
-  async findOne(id: string): Promise<CreateUserDto> {
+  async findOne(id: ObjectId): Promise<CreateUserDto> {
     const user = await this.usersRepository.findOne(id);    
     if(!user) throw new NotFoundException('User not found')
     

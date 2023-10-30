@@ -2,7 +2,7 @@ import { ClassSerializerInterceptor, ConflictException, Injectable, UseIntercept
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class UsersRepository {
@@ -16,8 +16,8 @@ export class UsersRepository {
         return this.userModel.find().exec();
     }
 
-    async findOne(id: string): Promise<CreateUserDto> {        
-        return this.userModel.findById(id);
+    async findOne(id: ObjectId): Promise<CreateUserDto> {        
+        return this.userModel.findById({_id:id});
     }
     async find(email:string): Promise<any> {        
         return this.userModel.find({ email });

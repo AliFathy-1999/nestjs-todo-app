@@ -3,9 +3,12 @@ import {
   Get, Post, Patch, Delete,
   Body, Param,
   UsePipes, ValidationPipe,
-  Req, Res,
+  Res,
   HttpStatus, HttpCode,
+  UseGuards,
+  Req
 } from '@nestjs/common';
+// import { AuthGuard } from '../guards/auth.guard';
 
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -13,14 +16,18 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dto/userDto';
+// import { AuthService } from './auth.service';
+import { ObjectId } from 'mongoose';
 import { AuthService } from './auth.service';
+import { AuthGuard } from '../guards/auth.guard';
+import { Request } from 'express';
 @Controller({
   version: '1',
   path: 'users',
 })
 
 export class UsersController {
-  constructor(private readonly usersService: UsersService, private authService:AuthService) {
+  constructor(private readonly usersService: UsersService,private authService:AuthService) {
   }
   
   @Post('/signup')
@@ -35,13 +42,11 @@ export class UsersController {
   @Post('/signin')
   @UsePipes(ValidationPipe)
   @HttpCode(HttpStatus.OK)
-  @Serialize(UserDto)
+  // @Serialize(UserDto)
   async singIn(@Body() reqBody: Record<string, any> ) {
     const { email, password } = reqBody
-    console.log(reqBody);
-    
-      const user = this.authService.signIn(email,password)      
-      return user
+      const userData = await this.authService.signIn(email,password)    
+      return userData
   }
   @Get()
   @Serialize(UserDto)
@@ -52,7 +57,7 @@ export class UsersController {
 
   @Get(':id')
   @Serialize(UserDto)
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: any) {
     let user = this.usersService.findOne(id)    
     return user
   }
@@ -68,5 +73,10 @@ export class UsersController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+  @UseGuards(AuthGuard)
+  @Get('/auth/profile')
+  getProfile(@Req() req:Request) {    
+    return req.user;
   }
 }

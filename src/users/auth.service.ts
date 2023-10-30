@@ -20,15 +20,20 @@ export class AuthService {
         return this.usersService.create(createUserDto);
     }
     async signIn(email:string, password:string){
-      const [ user ] = await this.usersService.find(email) as any;            
+      const [ user ] = await this.usersService.find(email) as any;     
+      console.log(user);
+             
       if(!user) throw new BadRequestException('Invalid Email');
       const userPassword = await bcrypt.compare(password, user.password);
+      
       if(!userPassword) throw new BadRequestException('Invalid Password');
       const payload = { userId: user._id, email: user.email };
-      return {
+      const userData = {
         user,
         token: await this.jwtService.signAsync(payload),
       };
+      
+      return userData;
 
   }
 }

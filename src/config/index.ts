@@ -19,7 +19,8 @@ export default {
     hash:{
         saltRounds: +SALT_ROUND,
     },
-    jwt:{
-        secret: JWT_SECRET_KEY
+    jwtConstants:{ 
+        secret: JWT_SECRET_KEY,
+        signOptions: { expiresIn: '3d' },
     }
 }
