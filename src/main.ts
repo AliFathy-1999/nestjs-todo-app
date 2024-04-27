@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import Config from './config';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { HttpExceptionFilter } from './filters/httpException.filter';
 
 const { 
   app : { port } 
@@ -17,13 +18,16 @@ async function bootstrap() {
     defaultVersion: '1',
     type: VersioningType.URI,
   });
+  app.useGlobalFilters(new HttpExceptionFilter());
   // Not allowed to enter field didn't exist in dto whitelist: true && forbidNonWhitelisted:true throw error (This field doesn't exist)
   app.useGlobalPipes(
     new ValidationPipe({ 
       whitelist: true,
       forbidNonWhitelisted:true,
-  })
+      stopAtFirstError: true
+    })
   );
+
   const config = new DocumentBuilder()
   .setTitle('Nest Mongoose TODOCRUD ')
   .setDescription('The User API description')

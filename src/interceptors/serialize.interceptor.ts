@@ -12,14 +12,16 @@ export function Serialize(dto: classConstructor) {
 export class SerializeInterceptor implements NestInterceptor{
   constructor(private dto: any) {}
   intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
-    // console.log('Running before handle ', context);
+
     
     return next.handle().pipe(
       map(data => {
-        const entitySerializer = plainToClass(this.dto, data.data, {
-          excludeExtraneousValues: true,
-        });
-        data.data = entitySerializer
+      	// console.log('data:', data)
+        // const entitySerializer = plainToClass(this.dto, data, {
+        //   excludeExtraneousValues: true,
+        // });
+        // console.log('entitySerializer:', entitySerializer)
+        // data.data = entitySerializer
         return data
         
       })

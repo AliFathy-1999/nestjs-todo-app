@@ -20,7 +20,7 @@ import { UserDto } from './dto/userDto';
 import { ObjectId } from 'mongoose';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '../guards/auth.guard';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { SignInDto } from './dto/signIn.dto';
 @Controller({
   version: '1',
@@ -50,30 +50,54 @@ export class UsersController {
       return userData
   }
   @Get()
-  @Serialize(UserDto)
+  // @Serialize(UserDto)
+  // @UseInterceptors(ClassSerializerInterceptor)
+
   @HttpCode(HttpStatus.OK)
-  findAll(@Res({ passthrough: true }) res: Response) {
-    return this.usersService.findAll();
+  async findAll(@Res() res: Response) {
+    const users = await this.usersService.findAll();
+    res.json({
+      message: 'Users got successfully',
+      data : users
+    })
+    return users;
   }
 
   @Get(':id')
   @Serialize(UserDto)
-  async findOne(@Param('id') id: any) {
-    let user = this.usersService.findOne(id)    
+  @HttpCode(HttpStatus.OK)
+  async findOne(@Param('id') id: any,@Res() res: Response) {
+    let user = await this.usersService.findOne(id)    
+    res.json({
+      message: 'User got successfully',
+      data : user
+    })
     return user
   }
 
   @Patch(':id')
   @Serialize(UserDto)
   @UsePipes(ValidationPipe)
+  @HttpCode(HttpStatus.OK)
+
   // @UseInterceptors(ClassSerializerInterceptor)
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto,@Res() res: Response) {
+    const updatedUser = await this.usersService.update(id, updateUserDto)
+    res.json({
+      message: 'User updated successfully',
+      data : updatedUser
+    })
+    return updatedUser;
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  @HttpCode(HttpStatus.OK)
+  async remove(@Param('id') id: string,@Res() res: Response) {
+    const deletedUser = await this.usersService.remove(id)
+    res.json({
+      message: 'User Deleted successfully',
+    })
+    return deletedUser;
   }
   @UseGuards(AuthGuard)
   @Get('/auth/profile')

@@ -5,9 +5,8 @@ import { TodoModule } from './todo/todo.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
-// import { UserSchema } from './users/entities/user.entity';
-import * as bcrypt from 'bcrypt';
-import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { MongooseFilter } from './filters/mongooseException.filter';
 
 
 @Module({
@@ -31,6 +30,11 @@ import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
     },
+    {
+      provide: APP_FILTER,
+      useClass: MongooseFilter,
+    },
+
   ],
 })
 export class AppModule {}

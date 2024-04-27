@@ -11,10 +11,13 @@ export class UsersRepository {
 
     async create(createUserDto: CreateUserDto): Promise<CreateUserDto> {
         const createdUser = this.userModel.create(createUserDto);
+        if (!createdUser) {
+            throw new ConflictException('User already exists');
+        }
         return createdUser;
     }
     async findAll(): Promise<CreateUserDto[]> {
-        return this.userModel.find().exec();
+        return this.userModel.find();
     }
 
     async findOne(id: string): Promise<CreateUserDto> {        

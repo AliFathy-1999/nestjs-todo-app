@@ -13,8 +13,6 @@ export class AuthService {
     constructor(private usersService : UsersService, private jwtService: JwtService) {}
 
     async signUp(createUserDto : CreateUserDto){
-        const users = await this.usersService.find(createUserDto.email) as any;        
-        if(users.length > 0) throw new BadRequestException('Email already exists');
         const hashPassword = await bcrypt.hash(createUserDto.password, saltRounds);
         createUserDto.password = hashPassword
         return this.usersService.create(createUserDto);

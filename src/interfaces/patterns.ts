@@ -14,6 +14,10 @@ const validationPatterns =  {
     OBJECTID_PATTERN : {
         pattern: /^[0-9a-fA-F]{24}$/,
         message: 'Invalid ObjectId'
+    },
+    EGYPTIAN_PHONE_NO_PATTERN: {
+        pattern: /^01[0125][0-9]{8}$/,
+        message: (field:string):string => `${field} must be Egyptian phone number.`
     }
 }
 

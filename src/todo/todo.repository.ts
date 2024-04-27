@@ -18,8 +18,6 @@ export class TodosRepository {
     }
 
     async findOne(filterBy: {[key:string]:any}): Promise<CreateTodoDto> {   
-        console.log('------------------------------');
-            
         return this.todoModel.findOne(filterBy);
     }
     async find(email:string): Promise<any> {        
