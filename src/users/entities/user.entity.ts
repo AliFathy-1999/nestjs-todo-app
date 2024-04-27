@@ -38,7 +38,7 @@ export class User {
     @Prop({required: true, unique: true, trim: true})
     userName: string;
 
-    @Prop({required:true })
+    @Prop({required:true, trim: true })
     phoneNumber: string;
 
     @Prop({default : Role.USER})
@@ -49,14 +49,16 @@ export class User {
     @Prop({default:false})
     verified: boolean;
 
-    @Prop({default: now()})
-    createdAt: Date;
-
-    @Prop({default: now()})
-    updatedAt: Date;
 }
 
 const UserSchema = SchemaFactory.createForClass(User);
+UserSchema.methods.toJSON = function () {
+  const user = this;
+  const userObject = user.toObject();
+  delete userObject.password;
+  delete userObject.__v;
+  return userObject;
+};
 type userType = InferSchemaType<typeof UserSchema>;
 
 export  { UserSchema,userType }

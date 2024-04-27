@@ -6,7 +6,8 @@ import { ObjectId } from 'mongoose';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(
+    private readonly usersRepository: UsersRepository) {}
 
   async create(createUserDto: CreateUserDto): Promise<CreateUserDto> {
     return this.usersRepository.create(createUserDto);
@@ -17,7 +18,7 @@ export class UsersService {
   
   async findOne(id: string): Promise<CreateUserDto> {
     const user = await this.usersRepository.findOne(id);    
-    if(!user) throw new NotFoundException('User not found')
+    // if(!user) throw new NotFoundException('User not found')
     
     return user
   }
