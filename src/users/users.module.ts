@@ -2,7 +2,7 @@ import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import UserSchema  from './entities/user.entity';
+import {UserSchema}  from './entities/user.entity';
 import { UsersRepository } from './users.repository';
 import { AuthService } from './auth.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
@@ -22,5 +22,10 @@ const { jwtConstants } = config
     UsersRepository,
     AuthService,
   ],
+  exports: [
+    UsersService,
+    UsersRepository,
+    AuthService
+  ]
 })
 export class UsersModule {}
