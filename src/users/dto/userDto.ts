@@ -29,6 +29,7 @@ export class UserDto {
     @Expose()
     createdAt: Date;
 
-    
+    // @Expose()
+    // token: string;
 
 }

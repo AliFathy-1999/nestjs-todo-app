@@ -21,6 +21,7 @@ import { ObjectId } from 'mongoose';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '../guards/auth.guard';
 import { Request } from 'express';
+import { SignInDto } from './dto/signIn.dto';
 @Controller({
   version: '1',
   path: 'users',
@@ -42,8 +43,8 @@ export class UsersController {
   @Post('/signin')
   @UsePipes(ValidationPipe)
   @HttpCode(HttpStatus.OK)
-  // @Serialize(UserDto)
-  async singIn(@Body() reqBody: Record<string, any> ) {
+  @Serialize(UserDto)
+  async singIn(@Body() reqBody: SignInDto ) {
     const { email, password } = reqBody
       const userData = await this.authService.signIn(email,password)    
       return userData
