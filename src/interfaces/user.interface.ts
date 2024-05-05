@@ -14,5 +14,9 @@ interface  IUser extends Document{
     userName: string;
     role: Role;
 }
-
-export { Role, IUser } 
+interface  Payload {
+    userId:string
+    email: string;
+    role: Role;
+}
+export { Role, IUser, Payload } 

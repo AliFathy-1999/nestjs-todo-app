@@ -21,7 +21,7 @@ export class UsersRepository {
     }
 
     async findOne(id: string): Promise<CreateUserDto> {        
-        return this.userModel.findById({_id:id});
+        return this.userModel.findOne({_id:id});
     }
     async find(email:string): Promise<any> {        
         return this.userModel.find({ email });

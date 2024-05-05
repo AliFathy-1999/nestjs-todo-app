@@ -13,11 +13,8 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dto/userDto';
-// import { AuthService } from './auth.service';
-import { ObjectId } from 'mongoose';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '../guards/auth.guard';
 import { Request, Response } from 'express';
@@ -44,9 +41,10 @@ export class UsersController {
   @UsePipes(ValidationPipe)
   @HttpCode(HttpStatus.OK)
   @Serialize(UserDto)
-  async singIn(@Body() reqBody: SignInDto ) {
+  async singIn(@Body() reqBody: SignInDto, @Res() res: Response) {
     const { email, password } = reqBody
-      const userData = await this.authService.signIn(email,password)    
+      const userData = await this.authService.signIn(email,password);
+      res.json(userData)    
       return userData
   }
   @Get()
@@ -99,9 +97,14 @@ export class UsersController {
     })
     return deletedUser;
   }
+
   @UseGuards(AuthGuard)
   @Get('/auth/profile')
-  getProfile(@Req() req:Request) {    
-    return req.user;
+  @HttpCode(HttpStatus.OK)
+  async getProfile(@Req() req:Request, @Res() res:Response) {
+    const user = await this.usersService.findOne(req.user.userId)
+    res.json({
+      data: user
+    })
   }
 }
