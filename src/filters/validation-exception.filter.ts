@@ -1,12 +1,7 @@
 // src/common/filters/validation-exception.filter.ts
 import { ExceptionFilter, Catch, ArgumentsHost, BadRequestException } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { getClassSchema } from 'joi-class-decorators';
 import * as moment from 'moment';
-import { UpdateTodoDto } from 'src/todo/dto/update-todo.dto';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { SignInDto } from 'src/users/dto/signIn.dto';
-import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 
 @Catch(BadRequestException)
 export class ValidationExceptionFilter implements ExceptionFilter {

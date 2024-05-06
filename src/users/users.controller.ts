@@ -8,11 +8,9 @@ import {
   UseGuards,
   Req
 } from '@nestjs/common';
-// import { AuthGuard } from '../guards/auth.guard';
 
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { userDto } from './dto/user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dto/userDto';
 import { AuthService } from './auth.service';
@@ -31,25 +29,23 @@ export class UsersController {
   
   @Post('/signup')
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createUserDto: CreateUserDto ) {
-      const createdUser = this.authService.signUp(createUserDto)      
+  async create(@Body() userDto: userDto ) {
+      const createdUser = this.authService.signUp(userDto)      
       return createdUser
   }
   
   @Post('/signin')
   @UsePipes(ValidationPipe)
   @HttpCode(HttpStatus.OK)
-  @Serialize(UserDto)
   async singIn(@Body() reqBody: SignInDto, @Res() res: Response) {
     const { email, password } = reqBody
       const userData = await this.authService.signIn(email,password);
       res.json(userData)    
       return userData
   }
-  @Get()
-  // @Serialize(UserDto)
-  // @UseInterceptors(ClassSerializerInterceptor)
 
+  @UseGuards(AuthGuard)
+  @Get('/')
   @HttpCode(HttpStatus.OK)
   async findAll(@Res() res: Response) {
     const users = await this.usersService.findAll();
@@ -60,6 +56,7 @@ export class UsersController {
     return users;
   }
 
+  @UseGuards(AuthGuard)
   @Get(':id')
   @Serialize(UserDto)
   @HttpCode(HttpStatus.OK)
@@ -72,14 +69,11 @@ export class UsersController {
     return user
   }
 
-  @Patch(':id')
-  @Serialize(UserDto)
-  @UsePipes(ValidationPipe)
+  @UseGuards(AuthGuard)
+  @Patch('/')
   @HttpCode(HttpStatus.OK)
-
-  // @UseInterceptors(ClassSerializerInterceptor)
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto,@Res() res: Response) {
-    const updatedUser = await this.usersService.update(id, updateUserDto)
+  async update(@Body() updateUserDto: userDto,@Req() req: Request, @Res() res: Response) {
+    const updatedUser = await this.usersService.update(req.user.userId, updateUserDto)
     res.json({
       message: 'User updated successfully',
       data : updatedUser
@@ -87,6 +81,7 @@ export class UsersController {
     return updatedUser;
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string,@Res() res: Response) {

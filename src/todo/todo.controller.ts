@@ -1,12 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Bind, Res, UsePipes, ValidationPipe, UseFilters, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Bind, Res, UsePipes, ValidationPipe, UseFilters, UseGuards, Req, HttpCode, HttpStatus } from '@nestjs/common';
 import { TodoService } from './todo.service';
-import { CreateTodoDto } from './dto/create-todo.dto';
-import { UpdateTodoDto } from './dto/update-todo.dto';
-import { Response } from 'express';
-import { ValidationExceptionFilter } from 'src/filters/validation-exception.filter';
+import { todoDto } from './dto/todo.dto';
+import { Request, Response } from 'express';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { todoDto } from './dto/todoDto';
 
 @Controller({
   version: '1',
@@ -17,50 +14,66 @@ export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Post()
-  @UsePipes(ValidationPipe)
-  @UseFilters(ValidationExceptionFilter) 
   @UseGuards(AuthGuard)
-
-  @Bind(Res({ passthrough: true }))
-  async create(@Res() response:Response,@Req() req:Request,@Body() createTodoDto: CreateTodoDto) {
-    createTodoDto.userId = req['user']._id
-    const todo = await this.todoService.create(createTodoDto);
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Res() res:Response,@Req() req:Request,@Body() createTodoDto: todoDto) {
+    
+    const todo = await this.todoService.create(req.user.userId,createTodoDto);
+    res.json({
+      message: 'Todo created successfully',
+      data : todo
+    })
     return todo;
-    // try {
-      
-    //   createTodoDto.userId = req['user']._id
-    //   const todo = await this.todoService.create(createTodoDto);
-    //   return response.status(201).send({
-    //     message: 'Todo created successfully',
-    //     data: todo
-    //   })
-    // } catch (error) {
-    //   return response.status(error.status).json({
-    //     message: error.message,
-    //   }) 
-    // }
   }
 
   @Get()
   @UseGuards(AuthGuard)
-  @Serialize(todoDto)
-  findAll(@Req() req:Request) {
-    const userId = req['user']._id
-    return this.todoService.findAll(userId);
+  @HttpCode(HttpStatus.OK)
+
+  async findAll(@Req() req:Request,@Res() res:Response) {
+    const userId = req.user.userId
+    const userTodos = await this.todoService.findAll(userId);
+    res.json({
+      message: 'Todos got successfully',
+      data : userTodos
+    })
+    return userTodos
   }
 
-  @Get(':id/:userId')
-  findOne(@Param('id') id: string,@Param('userId') userId: string) {
-    return this.todoService.findOne(id,userId);
+  @Get(':id')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async findOne(@Param('id') id: string, @Req() req:Request,@Res() res:Response) {
+    const userId = req.user.userId
+    const todo = await this.todoService.findOne(id,userId);
+    res.json({
+      message: 'Todo got successfully',
+      data : todo
+    })
+    return todo
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
-    return this.todoService.update(+id, updateTodoDto);
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async update(@Param('id') id: string, @Body() updateTodoDto: todoDto, @Req() req:Request,@Res() res:Response) {
+    const userId = req.user.userId;
+    const updatedTodo = await this.todoService.update(id, userId ,updateTodoDto);
+    res.json({
+      message: 'Todo updated successfully',
+      data : updatedTodo
+    })
+    return updatedTodo;
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.todoService.remove(+id);
-  }
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async remove(@Param('id') id: string, @Req() req:Request,@Res() res:Response) {
+    const userId = req.user.userId
+    const deletedTodo = await this.todoService.remove(id,userId)
+    res.json({
+      message: `Todo with Id ${id} deleted successfully`,
+    })
+    return deletedTodo;  }
 }

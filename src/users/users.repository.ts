@@ -1,37 +1,36 @@
 import { ClassSerializerInterceptor, ConflictException, Injectable, UseInterceptors } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { userDto } from './dto/user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersRepository {
-    constructor(@InjectModel(User.name) private readonly userModel: Model<CreateUserDto>) {}
+    constructor(@InjectModel(User.name) private readonly userModel: Model<userDto>) {}
 
-    async create(createUserDto: CreateUserDto): Promise<CreateUserDto> {
-        const createdUser = this.userModel.create(createUserDto);
+    async create(userDto: userDto): Promise<userDto> {
+        const createdUser = this.userModel.create(userDto);
         if (!createdUser) {
             throw new ConflictException('User already exists');
         }
         return createdUser;
     }
-    async findAll(): Promise<CreateUserDto[]> {
+    async findAll(): Promise<userDto[]> {
         return this.userModel.find();
     }
 
-    async findOne(id: string): Promise<CreateUserDto> {        
+    async findOne(id: string): Promise<userDto> {        
         return this.userModel.findOne({_id:id});
     }
     async find(email:string): Promise<any> {        
         return this.userModel.find({ email });
     }
 
-    async update(id: string, updateCatDto: UpdateUserDto): Promise<UpdateUserDto> {
+    async update(id: string, updateCatDto: userDto): Promise<userDto> {
         return this.userModel.findByIdAndUpdate(id, updateCatDto, { new: true }).exec();
     }
 
-    async remove(id: string): Promise<CreateUserDto> {
+    async remove(id: string): Promise<userDto> {
         return this.userModel.findByIdAndRemove(id).exec();
     }
 }

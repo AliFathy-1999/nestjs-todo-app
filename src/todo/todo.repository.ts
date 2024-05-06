@@ -1,34 +1,32 @@
-import { ClassSerializerInterceptor, ConflictException, Injectable, UseInterceptors } from '@nestjs/common';
-import { CreateTodoDto } from './dto/create-todo.dto';
-import { UpdateTodoDto } from './dto/update-todo.dto';
+import { Injectable } from '@nestjs/common';
+import { todoDto } from './dto/todo.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId } from 'mongoose';
+import { Model } from 'mongoose';
 import { Todo } from './entities/todo.entity';
-import { ITodo } from 'src/interfaces/todo.interface';
 
 @Injectable()
 export class TodosRepository {
-    constructor(@InjectModel(Todo.name) private readonly todoModel: Model<CreateTodoDto>) {}
+    constructor(@InjectModel(Todo.name) private readonly todoModel: Model<todoDto>) {}
 
-    async create(CreateTodoDto: CreateTodoDto): Promise<CreateTodoDto> {
-        return this.todoModel.create(CreateTodoDto);
+    async create(todoDto: {[key:string]:any}): Promise<todoDto> {
+        return this.todoModel.create(todoDto);
     }
-    async findAll(filterBy: {[key:string]:any}): Promise<CreateTodoDto[]> {
+    async findAll(filterBy: {[key:string]:any}): Promise<todoDto[]> {
         return this.todoModel.find(filterBy);
     }
 
-    async findOne(filterBy: {[key:string]:any}): Promise<CreateTodoDto> {   
+    async findOne(filterBy: {[key:string]:any}): Promise<todoDto> {   
         return this.todoModel.findOne(filterBy);
     }
     async find(email:string): Promise<any> {        
         return this.todoModel.find({ email });
     }
 
-    async update(id: string, updateCatDto: UpdateTodoDto): Promise<UpdateTodoDto> {
-        return this.todoModel.findByIdAndUpdate(id, updateCatDto, { new: true }).exec();
+    async update(id: string, userId:string,updateCatDto: todoDto): Promise<todoDto> {
+        return this.todoModel.findOneAndUpdate({_id: id, userId }, updateCatDto, { new: true }).exec();
     }
 
-    async remove(id: string): Promise<CreateTodoDto> {
-        return this.todoModel.findByIdAndRemove(id).exec();
+    async remove(id: string, userId:string): Promise<todoDto> {
+        return this.todoModel.findOneAndRemove({_id: id, userId }).exec();
     }
 }

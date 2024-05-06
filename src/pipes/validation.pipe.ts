@@ -4,17 +4,7 @@ import { getClassSchema } from 'joi-class-decorators';
 
 @Injectable()
 export class ValidationPipe implements PipeTransform {
-  /*
-              const bodyInput = plainToInstance(BodyDto, req.body);
-            const bodySchema = getClassSchema(BodyDto);
-            let error = bodySchema.validate(bodyInput).error;
-            if (error) {
-            throw new BadRequestException(
-                'Validation failed: ' +
-                error.details.map((err) => err.message).join(', '),
-            );
-            }
-  */
+
   transform(value: any, metadata: ArgumentMetadata) {
     const { metatype } = metadata;
     const bodyDto = metatype; // Dto Schema

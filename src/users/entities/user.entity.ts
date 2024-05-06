@@ -3,18 +3,19 @@ import { HydratedDocument, InferSchemaType, now } from 'mongoose';
 import { IUser, Role } from '../../interfaces/user.interface';
 import { IsEnum  } from 'class-validator';
 import { Exclude, Expose } from 'class-transformer';
-import { CreateTodoDto } from 'src/todo/dto/create-todo.dto';
 import { nanoid } from 'nanoid';
-import { v4 as uuidv4 } from 'uuid';
+import { todoDto } from 'src/todo/dto/todo.dto';
 
 export type UserDocument = HydratedDocument<IUser>;
 
+const todoId = nanoid()
+console.log('todoId:', todoId)
 
 @Schema({ timestamps: true, collection: 'User' })
 @Exclude()
 
 export class User {
-    @Prop({ type: String, default:  nanoid()})
+    @Prop({ type: String, default:  todoId })
     _id: string  
     @Prop({required: true, trim: true })
     firstName: string;
@@ -31,7 +32,7 @@ export class User {
     @Exclude()
     password: string;
 
-    constructor(partial: Partial<CreateTodoDto>) {
+    constructor(partial: Partial<todoDto>) {
         Object.assign(this, partial);
       }
 
