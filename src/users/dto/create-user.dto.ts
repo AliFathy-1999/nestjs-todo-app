@@ -27,14 +27,3 @@ export class CreateUserDto {
     phoneNumber : string;
 
 }
-export const CreateUserSchema = Joi.object({
-    firstName: Joi.string().trim().required().min(3).max(30).pattern(validationPatterns.CHARACTERS_ONLY.pattern),
-    lastName: Joi.string().trim().required().min(3).max(30).pattern(validationPatterns.CHARACTERS_ONLY.pattern),
-    email: Joi.string().email().required(),
-    password: Joi.string().trim().pattern(validationPatterns.PASSWORD_PATTERN.pattern)
-        .message('Password must contain at least one uppercase letter, one number and one special character').required(),
-    userName: Joi.string().trim().required().min(3).max(30),
-    phoneNumber: Joi.string().trim().required().length(11)
-        .pattern(validationPatterns.EGYPTIAN_PHONE_NO_PATTERN.pattern)
-        .message(validationPatterns.EGYPTIAN_PHONE_NO_PATTERN.message),
-});

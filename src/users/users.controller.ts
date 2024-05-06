@@ -11,7 +11,7 @@ import {
 // import { AuthGuard } from '../guards/auth.guard';
 
 import { UsersService } from './users.service';
-import { CreateUserDto, CreateUserSchema } from './dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dto/userDto';
@@ -30,9 +30,7 @@ export class UsersController {
   }
   
   @Post('/signup')
-  // @UsePipes(ValidationPipe)
   @HttpCode(HttpStatus.CREATED)
-  @UsePipes()
   async create(@Body() createUserDto: CreateUserDto ) {
       const createdUser = this.authService.signUp(createUserDto)      
       return createdUser
