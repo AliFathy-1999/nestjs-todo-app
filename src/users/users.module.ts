@@ -17,6 +17,7 @@ const { jwtConstants } = config
     JwtModule.register(jwtConstants),
   ],
   controllers: [UsersController],
+  
   providers: [ 
     UsersService,
     UsersRepository,

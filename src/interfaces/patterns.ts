@@ -17,7 +17,7 @@ const validationPatterns =  {
     },
     EGYPTIAN_PHONE_NO_PATTERN: {
         pattern: /^01[0125][0-9]{8}$/,
-        message: (field:string):string => `${field} must be Egyptian phone number.`
+        message: 'Invalid phone number, please enter a valid Egyptain phone number'
     }
 }
 
