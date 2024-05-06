@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { MongooseFilter } from './filters/mongooseException.filter';
+import { JoiPipeModule } from 'nestjs-joi';
 
 
 @Module({
@@ -18,6 +19,7 @@ import { MongooseFilter } from './filters/mongooseException.filter';
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.DB_URL, { dbName : 'todo-nest'}),
+    JoiPipeModule,
   ],
   controllers: [AppController],
   providers: [

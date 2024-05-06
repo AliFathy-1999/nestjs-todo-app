@@ -1,39 +1,40 @@
-import { IsEmail, IsPhoneNumber, IsString, Matches, MaxLength, MinLength } from "class-validator";
-import patterns from "src/interfaces/patterns";
-import { Role } from "src/interfaces/user.interface";
+import { JoiSchemaOptions } from "nestjs-joi";
+import { JoiSchema } from "joi-class-decorators";
+import * as Joi from "joi";
+import { Expose } from "class-transformer";
 import validationPatterns from "src/interfaces/patterns";
 
-const { PASSWORD_PATTERN,CHARACTERS_ONLY } = validationPatterns
+@JoiSchemaOptions({
+    allowUnknown: false,
+})
 export class CreateUserDto {
-    @IsString()
-    @MinLength(3, { message: 'Minimum length for First Name is 3'})
-    @MaxLength(30, { message: 'Maxmium length for First Name is 30'})
-    @Matches(CHARACTERS_ONLY.pattern, { message: CHARACTERS_ONLY.message('First Name') })
+    @Expose() @JoiSchema(Joi.string().trim().required().min(3).max(30).pattern(validationPatterns.CHARACTERS_ONLY.pattern))
     firstName: string;
 
-    @IsString()
-    @MinLength(3, { message: 'Minimum length for Last Name is 3'})
-    @MaxLength(30, { message: 'Maxmium length for Last Name is 30'})
-    @Matches(CHARACTERS_ONLY.pattern, { message: CHARACTERS_ONLY.message('Last name') })
+    @Expose() @JoiSchema(Joi.string().trim().required().min(3).max(30).pattern(validationPatterns.CHARACTERS_ONLY.pattern))
     lastName: string;
 
-    @IsEmail({}, { message : 'Invalid email format'})
+    @Expose() @JoiSchema(Joi.string().email().message('Invalid Email').required())
     email: string;
 
-    @Matches(PASSWORD_PATTERN.pattern, { message: PASSWORD_PATTERN.message })
-    @IsString()
-    @MinLength(8)
+    @Expose() @JoiSchema(Joi.string().trim().pattern(validationPatterns.PASSWORD_PATTERN.pattern).message('Password must contain at least one uppercase letter, one number and one special character').required() )
     password: string;
 
-    @IsString()
-    @MinLength(3)
-    @MaxLength(30)
+    @Expose() @JoiSchema(Joi.string().trim().required().min(3).max(30))
     userName: string;
 
-    @IsPhoneNumber('EG', { message: 'Invalid phone number, please enter a valid Egyptain phone number' })
+    @Expose() @JoiSchema(Joi.string().trim().required().length(11).pattern(validationPatterns.EGYPTIAN_PHONE_NO_PATTERN.pattern).message(validationPatterns.EGYPTIAN_PHONE_NO_PATTERN.message))
     phoneNumber : string;
 
-    verified: boolean;
-    
-    role: Role;
 }
+export const CreateUserSchema = Joi.object({
+    firstName: Joi.string().trim().required().min(3).max(30).pattern(validationPatterns.CHARACTERS_ONLY.pattern),
+    lastName: Joi.string().trim().required().min(3).max(30).pattern(validationPatterns.CHARACTERS_ONLY.pattern),
+    email: Joi.string().email().required(),
+    password: Joi.string().trim().pattern(validationPatterns.PASSWORD_PATTERN.pattern)
+        .message('Password must contain at least one uppercase letter, one number and one special character').required(),
+    userName: Joi.string().trim().required().min(3).max(30),
+    phoneNumber: Joi.string().trim().required().length(11)
+        .pattern(validationPatterns.EGYPTIAN_PHONE_NO_PATTERN.pattern)
+        .message(validationPatterns.EGYPTIAN_PHONE_NO_PATTERN.message),
+});

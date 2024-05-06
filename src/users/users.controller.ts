@@ -2,7 +2,7 @@ import {
   Controller,
   Get, Post, Patch, Delete,
   Body, Param,
-  UsePipes, ValidationPipe,
+  UsePipes,
   Res,
   HttpStatus, HttpCode,
   UseGuards,
@@ -11,7 +11,7 @@ import {
 // import { AuthGuard } from '../guards/auth.guard';
 
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, CreateUserSchema } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dto/userDto';
@@ -19,6 +19,7 @@ import { AuthService } from './auth.service';
 import { AuthGuard } from '../guards/auth.guard';
 import { Request, Response } from 'express';
 import { SignInDto } from './dto/signIn.dto';
+import { ValidationPipe } from 'src/pipes/validation.pipe';
 @Controller({
   version: '1',
   path: 'users',
@@ -29,9 +30,9 @@ export class UsersController {
   }
   
   @Post('/signup')
-  @UsePipes(ValidationPipe)
+  // @UsePipes(ValidationPipe)
   @HttpCode(HttpStatus.CREATED)
-  
+  @UsePipes()
   async create(@Body() createUserDto: CreateUserDto ) {
       const createdUser = this.authService.signUp(createUserDto)      
       return createdUser

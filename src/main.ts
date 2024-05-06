@@ -1,9 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import Config from './config';
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { VersioningType } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './filters/httpException.filter';
+import { ValidationExceptionFilter } from './filters/validation-exception.filter';
+import { ValidationPipe } from './pipes/validation.pipe';
 
 const { 
   app : { port } 
@@ -19,14 +21,17 @@ async function bootstrap() {
     type: VersioningType.URI,
   });
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new ValidationExceptionFilter());
+  app.useGlobalPipes(new ValidationPipe());
+
   // Not allowed to enter field didn't exist in dto whitelist: true && forbidNonWhitelisted:true throw error (This field doesn't exist)
-  app.useGlobalPipes(
-    new ValidationPipe({ 
-      whitelist: true,
-      forbidNonWhitelisted:true,
-      stopAtFirstError: true
-    })
-  );
+  // app.useGlobalPipes(
+  //   new ValidationPipe({ 
+  //     // whitelist: true,
+  //     // forbidNonWhitelisted:true,
+  //     // stopAtFirstError: true
+  //   })
+  // );
 
   const config = new DocumentBuilder()
   .setTitle('Nest Mongoose TODOCRUD ')

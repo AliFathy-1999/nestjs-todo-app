@@ -3,9 +3,8 @@ import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { Response } from 'express';
-import { ValidationExceptionFilter } from 'src/interfaces/validation-exception.filter';
+import { ValidationExceptionFilter } from 'src/filters/validation-exception.filter';
 import { AuthGuard } from 'src/guards/auth.guard';
-import { Types } from 'mongoose';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { todoDto } from './dto/todoDto';
 
