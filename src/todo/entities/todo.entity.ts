@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { HydratedDocument, Types, now } from 'mongoose';
-import { nanoid } from 'nanoid';
 import { ITodo } from 'src/interfaces/todo.interface';
 import { User } from 'src/users/entities/user.entity';
 export type TodoDocument = HydratedDocument<ITodo>;
@@ -9,9 +8,6 @@ export type TodoDocument = HydratedDocument<ITodo>;
 @Schema({ timestamps: true, collection: 'Todo' })
 
 export class Todo {
-
-    @Prop({ type: String, default:  nanoid()})
-    _id: string  
 
     @Prop({ required: true, ref: 'User', type: String })
     userId: User;
@@ -25,7 +21,7 @@ export class Todo {
 
 
     @Prop({ type : String, enum: ['todo', 'in-progress', 'completed'], default: 'todo' })
-    status: boolean;
+    status: string;
 }
 
 const TodoSchema = SchemaFactory.createForClass(Todo);

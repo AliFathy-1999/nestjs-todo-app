@@ -9,9 +9,10 @@ import * as Joi from "joi";
 const { CHARACTER_NUMBERS_PATTERN } = validationPatterns
 @JoiSchemaOptions({
     allowUnknown: true,
+    abortEarly: true
 })
-export class todoDto{
-
+export class todoDto {
+    
     @Expose() @JoiSchema([CREATE], Joi.string().trim().required().min(3).max(100).pattern(CHARACTER_NUMBERS_PATTERN.pattern).message(CHARACTER_NUMBERS_PATTERN.message('Todo name')))
     @Expose() @JoiSchema([UPDATE], Joi.string().trim().optional().min(3).max(100).pattern(CHARACTER_NUMBERS_PATTERN.pattern).message(CHARACTER_NUMBERS_PATTERN.message('Todo name')))
     title: string;

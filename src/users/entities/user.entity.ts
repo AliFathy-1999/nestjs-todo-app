@@ -8,14 +8,12 @@ import { todoDto } from 'src/todo/dto/todo.dto';
 
 export type UserDocument = HydratedDocument<IUser>;
 
-const todoId = nanoid()
-console.log('todoId:', todoId)
 
 @Schema({ timestamps: true, collection: 'User' })
 @Exclude()
 
 export class User {
-    @Prop({ type: String, default:  todoId })
+    @Prop({ type: String, default:  nanoid() })
     _id: string  
     @Prop({required: true, trim: true })
     firstName: string;

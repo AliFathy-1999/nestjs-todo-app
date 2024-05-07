@@ -6,6 +6,7 @@ import validationPatterns from "src/interfaces/patterns";
 
 @JoiSchemaOptions({
     allowUnknown: true,
+    abortEarly: true
 })
 export class userDto {
     @Expose() @JoiSchema([CREATE], Joi.string().trim().required().min(3).max(30).pattern(validationPatterns.CHARACTERS_ONLY.pattern))

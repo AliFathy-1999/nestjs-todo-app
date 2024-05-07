@@ -1,9 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Bind, Res, UsePipes, ValidationPipe, UseFilters, UseGuards, Req, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Bind, Res, UsePipes, UseFilters, UseGuards, Req, HttpCode, HttpStatus } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { todoDto } from './dto/todo.dto';
 import { Request, Response } from 'express';
 import { AuthGuard } from 'src/guards/auth.guard';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
 
 @Controller({
   version: '1',
@@ -35,12 +34,12 @@ export class TodoController {
     const userTodos = await this.todoService.findAll(userId);
     res.json({
       message: 'Todos got successfully',
-      data : userTodos
+      ...userTodos
     })
     return userTodos
   }
 
-  @Get(':id')
+  @Get('/:id')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: string, @Req() req:Request,@Res() res:Response) {
@@ -75,5 +74,7 @@ export class TodoController {
     res.json({
       message: `Todo with Id ${id} deleted successfully`,
     })
-    return deletedTodo;  }
+    return deletedTodo;  
+  }
+
 }
