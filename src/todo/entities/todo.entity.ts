@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { HydratedDocument, Types, now } from 'mongoose';
 import { ITodo } from 'src/interfaces/todo.interface';
 import { User } from 'src/users/entities/user.entity';
-import * as moment from 'moment'; 
+import * as moment from 'moment-timezone'; 
 export type TodoDocument = HydratedDocument<ITodo>;
 
 
@@ -20,6 +20,8 @@ export class Todo {
     @Prop({ default: function() { return `${this.name}'s description`;}, trim: true })
     description: string;
 
+    @Prop({ type:String, default: moment().tz('Africa/Cairo').format('LLLL') })
+    startDate: string;
 
     @Prop({ type : String, enum: ['todo', 'in-progress', 'completed'], default: 'todo' })
     status: string;

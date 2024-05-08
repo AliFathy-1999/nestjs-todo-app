@@ -32,8 +32,10 @@ export class TodoController {
   async findAll(@Req() req:Request,@Res() res:Response) {
     const userId = req.user.userId
     const userTodos = await this.todoService.findAll(userId);
+    let message = 'Todos got successfully'
+    if(userTodos.data.length === 0)  message = 'No Todo found'
     res.json({
-      message: 'Todos got successfully',
+      message,
       ...userTodos
     })
     return userTodos
