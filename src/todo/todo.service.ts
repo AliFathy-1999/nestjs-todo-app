@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { TodosRepository } from './todo.repository';
 import { todoDto } from './dto/todo.dto';
 
@@ -18,15 +18,19 @@ export class TodoService {
     }
   }
 
-  findOne(todoId:string,userId:string) {
+  async findOne(todoId:string,userId:string) {
     return this.todosRepository.findOne({_id:todoId,userId});
   }
 
-  update(id: string, userId:string, updateTodoDto: todoDto) {
-    return this.todosRepository.update(id,userId,updateTodoDto);
+  async update(id: string, userId:string, updateTodoDto: todoDto) {
+    const todo = await this.todosRepository.findOne({_id: id, userId });
+    if(!todo) throw new NotFoundException('Todo not found');
+    return await this.todosRepository.update(id,userId,updateTodoDto);
   }
 
-  remove(id: string, userId:string) {
-    return this.todosRepository.remove(id,userId);
+  async remove(id: string, userId:string) {
+    const todo = await this.todosRepository.findOne({_id: id, userId });
+    if(!todo) throw new NotFoundException('Todo not found');
+    return await this.todosRepository.remove(id,userId);
   }
 }

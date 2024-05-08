@@ -9,24 +9,24 @@ export class TodosRepository {
     constructor(@InjectModel(Todo.name) private readonly todoModel: Model<todoDto>) {}
 
     async create(todoDto: {[key:string]:any}): Promise<todoDto> {
-        return this.todoModel.create(todoDto);
+        return await this.todoModel.create(todoDto);
     }
     async findAll(filterBy: {[key:string]:any}): Promise<todoDto[]> {
-        return this.todoModel.find(filterBy);
+        return await this.todoModel.find(filterBy);
     }
 
     async findOne(filterBy: {[key:string]:any}): Promise<todoDto> {   
-        return this.todoModel.findOne(filterBy);
+        return await this.todoModel.findOne(filterBy);
     }
     async find(email:string): Promise<any> {        
-        return this.todoModel.find({ email });
+        return await this.todoModel.find({ email });
     }
 
-    async update(id: string, userId:string,updateCatDto: todoDto): Promise<todoDto> {
-        return this.todoModel.findOneAndUpdate({_id: id, userId }, updateCatDto, { new: true }).exec();
+    async update(id: string, userId:string,updateTodoDto: todoDto): Promise<todoDto> {
+        return await this.todoModel.findOneAndUpdate({_id: id, userId }, updateTodoDto, { new: true });
     }
 
     async remove(id: string, userId:string): Promise<todoDto> {
-        return this.todoModel.findOneAndRemove({_id: id, userId }).exec();
+        return await this.todoModel.findOneAndRemove({_id: id, userId }).exec();
     }
 }

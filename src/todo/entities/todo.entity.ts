@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { HydratedDocument, Types, now } from 'mongoose';
 import { ITodo } from 'src/interfaces/todo.interface';
 import { User } from 'src/users/entities/user.entity';
+import * as moment from 'moment'; 
 export type TodoDocument = HydratedDocument<ITodo>;
 
 
@@ -22,9 +23,15 @@ export class Todo {
 
     @Prop({ type : String, enum: ['todo', 'in-progress', 'completed'], default: 'todo' })
     status: string;
+
 }
 
 const TodoSchema = SchemaFactory.createForClass(Todo);
-
+TodoSchema.methods.toJSON = function () {
+    const todo = this;
+    const todoObject = todo.toObject();
+    delete todoObject.__v;
+    return todoObject;
+  };
 
 export default TodoSchema
