@@ -8,6 +8,7 @@ export class AppController {
 
   @Get('/')
   rootURL(@Req() req: Request, @Res() res: Response) {
+    
     res.status(200).json({
       message: 'server is running successfully',
       success: true,

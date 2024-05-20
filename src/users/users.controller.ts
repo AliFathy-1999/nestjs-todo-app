@@ -18,6 +18,9 @@ import { AuthGuard } from '../guards/auth.guard';
 import { Request, Response } from 'express';
 import { SignInDto } from './dto/signIn.dto';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
+import { RolesGuard } from 'src/guards/role.guard';
+import { Role } from 'src/interfaces/user.interface';
+import { Roles } from 'src/decorators/roles';
 @Controller({
   version: '1',
   path: 'users',
@@ -44,9 +47,10 @@ export class UsersController {
       return userData
   }
 
-  @UseGuards(AuthGuard)
   @Get('/')
   @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard,RolesGuard)
   async findAll(@Res() res: Response) {
     const users = await this.usersService.findAll();
     res.json({
@@ -84,6 +88,8 @@ export class UsersController {
   @UseGuards(AuthGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard,RolesGuard)
   async remove(@Param('id') id: string,@Res() res: Response) {
     const deletedUser = await this.usersService.remove(id)
     res.json({

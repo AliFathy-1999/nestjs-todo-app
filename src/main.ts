@@ -23,7 +23,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalFilters(new ValidationExceptionFilter());
   app.useGlobalPipes(new ValidationPipe());
-
+  
   // Not allowed to enter field didn't exist in dto whitelist: true && forbidNonWhitelisted:true throw error (This field doesn't exist)
   // app.useGlobalPipes(
   //   new ValidationPipe({ 
