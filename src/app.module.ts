@@ -19,7 +19,11 @@ import { JoiPipeModule } from 'nestjs-joi';
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.DB_URL, { dbName : 'todo-nest'}),
-    JoiPipeModule,
+    JoiPipeModule.forRoot({
+      pipeOpts: {
+        skipErrorFormatting: true,
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [

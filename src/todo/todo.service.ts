@@ -1,16 +1,12 @@
-import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
-import { CreateTodoDto } from './dto/create-todo.dto';
-import { UpdateTodoDto } from './dto/update-todo.dto';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { TodosRepository } from './todo.repository';
+import { todoDto } from './dto/todo.dto';
 
 @Injectable()
 export class TodoService {
   constructor(private readonly todosRepository: TodosRepository) {}
-  async create(createTodoDto: CreateTodoDto) {
-    const { userId,name } = createTodoDto
-    const todoExisted = await this.todosRepository.findOne({ userId, name });
-    if(todoExisted) throw new ConflictException('Todo already existed');
-    const createdTodo = await this.todosRepository.create(createTodoDto);
+  async create(userId:string,createTodoDto: todoDto) {
+    const createdTodo = await this.todosRepository.create({userId,...createTodoDto});
     if(!createdTodo) throw new BadRequestException('Failed to create Todo, please try again');
     return 
   }
@@ -22,15 +18,19 @@ export class TodoService {
     }
   }
 
-  findOne(todoId:string,userId:string) {
+  async findOne(todoId:string,userId:string) {
     return this.todosRepository.findOne({_id:todoId,userId});
   }
 
-  update(id: number, updateTodoDto: UpdateTodoDto) {
-    return `This action updates a #${id} todo`;
+  async update(id: string, userId:string, updateTodoDto: todoDto) {
+    const todo = await this.todosRepository.findOne({_id: id, userId });
+    if(!todo) throw new NotFoundException('Todo not found');
+    return await this.todosRepository.update(id,userId,updateTodoDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} todo`;
+  async remove(id: string, userId:string) {
+    const todo = await this.todosRepository.findOne({_id: id, userId });
+    if(!todo) throw new NotFoundException('Todo not found');
+    return await this.todosRepository.remove(id,userId);
   }
 }

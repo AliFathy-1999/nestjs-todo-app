@@ -21,6 +21,6 @@ export default {
     },
     jwtConstants:{ 
         secret: JWT_SECRET_KEY,
-        signOptions: { expiresIn: '3d' },
+        signOptions: { expiresIn: '1d' },
     }
 }
